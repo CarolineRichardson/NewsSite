@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+  <h1>{{messages.title}}</h1>
+    <p>{{messages.message}}</p>
+</div>
+
+
+<div class="jumbotron">
+  <p><a href="/messages/delete/{{messages.id}}">Delete</a></p>
+</div>
+
+{% endblock %}

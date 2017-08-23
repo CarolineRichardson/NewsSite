@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+    <title>Brickout!</title>
+
+    <div class="container">
+
+      <div id = "divid" >
+        <h1>Brickout Leaderboard</h1>
+          {% for d in data %}
+            <h3>{{ forloop.counter }}. {{ d.username }}: {{ d.score }}</h3>
+          {% endfor %}
+      </div>
+</div>
+</body>
+</html>
+
+{% endblock %}

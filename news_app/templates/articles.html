@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %} News!{% endblock %}
+
+{% block content %}
+
+
+  <div class="jumbotron">
+    <h1>Articles...</h1>
+    <p>Why not add one yourself?</p>
+    <p>Click <a href="/articles/create/">here</a> to create an article!</p>
+  </div>
+
+
+{% if articles.count > 0 %}
+
+{% for article in articles %}
+
+<div class="container">
+      <!-- Example row of columns -->
+      <div class="row-3">
+        <div class="col-md-12">
+          <h2><a class="btn btn-default" href="/articles/get/{{ article.id }}/" role="button">{{ article.title }}</a></h2>
+          
+            <div class ="jumbotron">
+              <p>{{ article.pub_date }}</p>
+              <p>{{ article.body|truncatewords:"12" }}</p>
+              <p>{{ article.likes }} likes</a></p>
+            </div>
+          </div>
+      </div>
+</div>
+<br>
+{% endfor %}
+
+  
+{% else %}
+
+<p>None to show!</p>
+
+{% endif %}
+
+
+<div class="jumbotron">
+    <p>Click <a href="/brickout/">here</a> to play our brilliant game Brickout!</p>
+    <p>Click <a href="/articles/create/">here</a> to create an article!</p>
+
+</div>
+
+
+{% endblock %}
+

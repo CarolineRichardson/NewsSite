@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+
+<body background="/static/bootstrap-3.3.2-dist/img/water.jpg">
+<div class="jumbotron">
+<h2>{{ username }} you are now logged in!</h2>
+</div>
+<div class="jumbotron">
+    <h1>Messages:</h1>
+    <br>
+    {% for n in messages %}
+      <p><a href="/messages/show/{{n.id}}">{{n.title}}</a></p>
+    {% endfor%}
+</div>
+
+<div class="jumbotron">
+  <p><br></p>
+  <p>Click <a href="/accounts/logout/">here</a> to logout!</p>
+</div>
+  
+{% endblock %}

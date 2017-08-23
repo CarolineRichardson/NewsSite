@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %} Search for News {% endblock %}
+
+{% block content %}
+
+{% if error %}
+<pstyle="color:red;"> Please submit a search term. </p>
+{% endif %}
+
+<form action="/search/" method="get">
+	<input type="text" name="q">
+	<input type="submit" value="Search">
+</form>
+
+{% endblock %}

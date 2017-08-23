@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="col-md-8">
+
+<h1>{{ article.title }}</h1>
+<p>Author: {{ article.username }}</p>
+<br>
+<p>{{ article.body }}</p>
+<br>
+<p>{{ article.likes }} likes</a></p>
+<p><a href="/articles/like/{{article.id}}" class="btn btn-xs btn-success">Like</a></p>
+
+<br>
+<br>
+
+<p>End of article...</p>
+<p>Why not add one yourself?</p>
+<p>Click <a href="/articles/create/">here</a> to create an article!</p>
+
+<br>
+<br>
+<br>
+<br>
+
+
+{% endblock %}

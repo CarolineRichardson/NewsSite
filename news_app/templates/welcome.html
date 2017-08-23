@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<br>
+
+<div class="jumbotron">
+    <h1>Welcome to our site!</h1>
+    <br>
+    <p>Click <a href="/loggedIn/">here</a> to view your profile!</p>
+  </div>
+
+<html> 
+<head> 
+<body background="/static/bootstrap-3.3.2-dist/img/skyline.jpg"
+<script> 
+
+
+ 
+</script> 
+</head> 
+</body> 
+</html> 
+
+
+<div class="jumbotron">
+
+{% if user.is_authenticated %}
+<p>{{ user }} you are now logged in.</p>
+
+
+{% else %}
+<p>Please login (or register) before using any of our services.</p>
+  
+</div>
+{% endif %}
+{%  endblock %}
+

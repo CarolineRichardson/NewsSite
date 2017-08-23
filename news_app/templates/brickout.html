@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load staticfiles %}
+<html>
+<head>
+<title>Brickout</title>
+<script>
+
+
+// global variables
+var x_velocity = 0;
+var x = 200;
+var scoreDiv;
+var highScoreDiv;
+var bricksArray = new Array();
+var ball = new Object();
+var score;
+var highScore=0;
+var isGamePlaying = false; // game state
+
+
+
+function setup() 
+{
+	// register keyboard event listener functions
+	window.addEventListener("keydown", handlekeydown, false);
+	window.addEventListener("keyup", handlekeyup, false);
+	scoreDiv = document.getElementById("score"); 
+	highScoreDiv = document.getElementById("highScore"); 
+ 
+ 
+}
+
+
+
+function handlekeydown(e) 
+{
+	if (isGamePlaying) 
+	{
+	
+	if (e.keyCode==37) 
+	{    
+	     // left arrow key
+	     x_velocity = -8;
+	}
+
+	else if (e.keyCode==39) 
+	{   
+	    // right arrow key
+		x_velocity = 8;
+	}
+}	
+						
+	else 
+	{
+		if (e.keyCode==32) // spacebar
+		startGame();	
+	}
+
+}
+
+function handlekeyup(e) 
+{
+	if (e.keyCode==37 || e.keyCode==39) // left/right key
+		x_velocity = 0;
+}
+
+function updateScore(s) 
+{
+	score=s;
+	
+	if(score>highScore)
+	{
+		highScore = score;
+                highScoreDiv.innerHTML = "High Score: "+highScore;
+	}
+	
+  else
+	scoreDiv.innerHTML = "Score: "+score;
+ 
+}
+
+
+function setupBricks() 
+{
+	bricksArray = new Array();
+	var brickNum = 0;
+	
+		for (var x=10; x<670; x+=20) 
+		{
+			for (var y=10; y<100; y+=20) 
+			{
+				bricksArray[brickNum] = new Object();
+				bricksArray[brickNum].x = x;
+				bricksArray[brickNum].y = y;
+				bricksArray[brickNum].alive = true;
+				brickNum++;
+			}
+	   }
+}
+
+
+function startGame() 
+{
+		document.getElementById("instructions").style.visibility = "hidden";
+		scoreDiv.style.visibility = "";
+		x=200;
+		updateScore(0);
+		document.getElementById("highScore").style.visibility = "";
+		isGamePlaying = true;
+		setupBricks();
+		
+		ball.x = 350;
+		ball.y = 450;
+		ball.velx = 5;
+		ball.vely = -5;
+		
+}
+
+function isCollision(x1,y1,w1,h1, x2,y2,w2,h2)
+{
+	if (
+		( ( x1<=x2 && x1+w1>=x2 ) || ( x2<=x1 && x2+w2>=x1 ) )
+		&& 
+		( ( y1<=y2 && y1+h1>=y2 ) || ( y2<=y1 && y2+h2>=y1 ) )	
+		)
+		return true;
+			
+	else 
+		return false;
+				
+}
+
+			
+// the game's animation function
+function animate() 
+{
+
+	if (isGamePlaying) 
+	{
+		// move the player
+		x += x_velocity;
+		
+		if (x<0)
+		x=0;
+		
+		else if (x>640)
+        	x=640;
+		
+		//move the ball
+		ball.x += ball.velx;
+		ball.y += ball.vely;
+		
+		//check ball collisions with wall
+		
+		if (ball.x<=0)
+		{
+			ball.x=0;
+			ball.velx=-ball.velx;
+		}
+		
+		else if (ball.x>=690)
+		{
+			ball.x=690;
+			ball.velx=-ball.velx;
+			
+		}
+		
+		if (ball.y<=0)
+		{
+			ball.y=0;
+			ball.vely=-ball.vely;
+		}
+	
+		else if (ball.y>490)
+		{
+			gameOver();
+		}
+	
+
+		//check ball collisions with players bat
+		if  (isCollision(ball.x,ball.y,10,10, x,480,60,20))
+				ball.vely=-ball.vely;
+			
+			
+			//check ball collisions with bricks
+			for (var i=0;i<bricksArray.length;i++)
+			{
+				if(bricksArray[i].alive && isCollision(ball.x,ball.y,10,10,bricksArray[i].x,bricksArray[i].y,15,8) )  
+				{
+						ball.vely=-ball.vely;
+						bricksArray[i].alive=false;
+						updateScore(score+10);
+				
+				}
+				
+			}
+		
+		
+	}
+
+	draw();
+	window.setTimeout("animate();",20);
+}
+
+
+function gameOver() 
+{
+	// show end-game screen
+	
+	isGamePlaying = false;
+	document.getElementById("instructions").style.visibility = "";
+
+}
+
+function addScore() 
+{
+	var form = document.getElementById("form"); // get form element
+        var scoreInput = document.getElementById("scoreDiv"); // get score element
+	scoreInput.value = highScore; // set it to score
+	scoreInput.readOnly = true; // make score input read only
+	
+	form.submit();
+}
+
+
+function draw() 
+{
+
+	var canvas = document.getElementById("canvas");
+	var context = canvas.getContext('2d');
+	
+		//background
+		context.fillStyle="#CCCCCC";
+		context.fillRect(0,0,700,500);
+		
+		//players bat
+		context.fillStyle="#DD0000";
+		context.fillRect(x,480,60,20);
+		
+		//bricks
+		context.fillStyle="#0000DD";
+		for (var i=0;i<bricksArray.length;i++) 
+		{	
+			if (bricksArray[i].alive)
+			
+			context.fillRect(bricksArray[i].x,bricksArray[i].y,15,8);
+		}
+		
+		//ball
+		context.fillStyle = "#999900";
+		context.fillRect(ball.x,ball.y,10,10);
+		
+}
+
+</script>
+</head>
+<body onload="setup(); animate();">
+
+
+<div class="container">
+	    <img src="/static/bootstrap-3.3.2-dist/img/brickout.jpg"/>
+</div>
+
+
+<canvas id='canvas' width="700" height="500"></canvas>
+
+
+
+
+
+<div id='score' style='position:absolute; left:1000px; top:500px; visibility:visible;' class="jumbotron">Score: 0</div>
+<div id='highScore' style='position:absolute; left:1000px; top:500px; visibility:visible;' class="jumbotron">High Score: 0</div>
+<div id='instructions' style='position:absolute; left:200px; top:600px; border-style:solid; text-align:center;' class="jumbotron">
+	Bounce the ball to destroy the blocks</p>
+	Press space start, arrows to steer.
+</div>
+
+
+
+
+<br>
+<br>
+<br>
+
+
+<div class="jumbotron">
+
+<p>Click <a href="/loggedIn/">here</a> to view your profile!</p>
+<p>Click <a href="/articles/create/">here</a> to create an article!</p>
+<br>
+<p>Click <a href="/accounts/logout/">here</a> logout... not that you would, but the option is there!</p>
+
+</div>
+
+</div>
+
+
+</body>
+</html>
+
+{% endblock %}
+
